@@ -1,24 +1,37 @@
-from statistics import mean
-import cv2 as cv
+import matplotlib.pyplot as plt
 import numpy as np
-import copy
+from PIL import Image, ImageOps
 
-def mean_filter(img, ksize):
-    temp = np.zeros((513 - ksize, 513 - ksize, 3), dtype = np.uint8)
-    for i in range(513 - ksize):
-        for j in range(513 - ksize):
+def read_image():
+    img = Image.open('ruler.512_2.tiff')
+    img = ImageOps.grayscale(img)
+    img = np.array(img)
+    plt.imshow(img, cmap='gray')
+    plt.show()
+    return img
+
+def padding(img, img_size, ksize):
+    temp = np.zeros((img_size + ksize, img_size + ksize))
+    for i in range(img_size):
+        for j in range(img_size):
+            temp[i+ksize//2][j+ksize//2] = img[i][j]
+    return temp
+
+def mean_filter(img, img_size, ksize):
+    temp = np.zeros((img_size - ksize + 1, img_size - ksize + 1))
+    for i in range(img_size - ksize + 1):
+        for j in range(img_size - ksize + 1):
             score = 0
             for _i in range(ksize):
                 for _j in range(ksize):
-                    score += img[i+_i][j+_j][0]
-            temp[i][j] = [score/(ksize*ksize), score/(ksize*ksize), score/(ksize*ksize)]
-    cv.imshow(f"Mean Image {ksize} x {ksize}", temp)
+                    score += img[i+_i][j+_j]
+            temp[i][j] = score/(ksize*ksize)
+    plt.imshow(temp, cmap='gray')
+    plt.show()
 
 
-img = cv.imread('image.tiff')
-cv.imshow("IMAGE" ,img)
-mean_filter(img, 3)
-mean_filter(img, 5)
-
-cv.waitKey(0)       
-cv.destroyAllWindows()
+img = read_image()
+img1 = padding(img, len(img), 3)
+mean_filter(img1, len(img1), 3)
+img2 = padding(img, len(img), 5)
+mean_filter(img, len(img), 5)

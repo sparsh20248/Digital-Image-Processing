@@ -11,6 +11,13 @@ def read_image():
     plt.show()
     return img
 
+def padding(img, img_size, ksize):
+    temp = np.zeros((img_size + ksize, img_size + ksize))
+    for i in range(img_size):
+        for j in range(img_size):
+            temp[i+ksize//2][j+ksize//2] = img[i][j]
+    return temp
+
 def median_filter(img, img_size, ksize):
     temp = np.zeros((img_size - ksize,img_size - ksize))
     for i in range(img_size - ksize):
@@ -22,11 +29,14 @@ def median_filter(img, img_size, ksize):
             score.sort()
             number = score[len(score)//2]
             temp[i][j] = number
+    print(temp.shape)
     plt.imshow(temp, cmap='gray')
     plt.show()
 
 
 img = read_image()
-median_filter(img, len(img), 3)
-median_filter(img, len(img), 5)
+img1 = padding(img, len(img), 3)
+median_filter(img1, len(img1), 3)
+img2 = padding(img, len(img), 5) 
+median_filter(img2, len(img2), 5)
 
