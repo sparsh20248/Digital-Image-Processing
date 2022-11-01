@@ -19,6 +19,8 @@ def padding(img, img_size, ksize):
     return temp
 
 def median_filter(img, img_size, ksize):
+    img = padding(img, len(img), 3)
+    img_size = len(img)
     temp = np.zeros((img_size - ksize,img_size - ksize))
     for i in range(img_size - ksize):
         for j in range(img_size - ksize):
@@ -35,8 +37,8 @@ def median_filter(img, img_size, ksize):
 
 
 img = read_image()
-img1 = padding(img, len(img), 3)
+img1 = img.copy()
+img2 = img.copy()
 median_filter(img1, len(img1), 3)
-img2 = padding(img, len(img), 5) 
 median_filter(img2, len(img2), 5)
 
